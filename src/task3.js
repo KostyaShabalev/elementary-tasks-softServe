@@ -139,14 +139,14 @@ function passNameValidation(name) {
 	return ( isString && consistOfThreeCharacters && hasOnlyThreeCharacters );
 }
 
-function passSidesValidation(inputValues) {
+function passTriangleSidesValidation(inputValues) {
 	
 	return ( validator.isPositiveNumber(inputValues.firstSide) ||
 					validator.isPositiveNumber(inputValues.secondSide) ||
 					validator.isPositiveNumber(inputValues.thirdSide) );
 }
 
-function validateSideLengths(triangleValues) {
+function validateTriangleSideLengths(triangleValues) {
 	const firstSide = triangleValues.firstSide;
 	const secondSide = triangleValues.secondSide;
 	const thirdSide = triangleValues.thirdSide;
