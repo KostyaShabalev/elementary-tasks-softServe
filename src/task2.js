@@ -27,12 +27,12 @@ const envelopesTemplate = `
 function getEnevelopesObject() {
   return {
     name: 'envelopes',
-    createTaskTemplate: createEnvelopesTemplate,
+    createTaskTemplate: getEnvelopesTemplate,
     setTaskListeners: setEnvelopesListeners
   };
 }
 
-function createEnvelopesTemplate() {
+function getEnvelopesTemplate() {
   return envelopesTemplate;
 }
 
@@ -44,30 +44,79 @@ function setEnvelopesListeners() {
   const runButton = document.querySelector('.button-envelopes');
 
   runButton.addEventListener('click', () => {
-    const firstEnvelope = {
-      length: +firstEnvelopeLengthInput.value,
-      width: +firstEnvelopeWidthInput.value
-    };
-    const secondEnvelope = {
-      length: +secondEnvelopeLengthInput.value,
-      width: +secondEnvelopeWidthInput.value
-    };
-    const result = isSmaller(firstEnvelope, secondEnvelope);
+		const firstEnvelope = createEnvelope(+firstEnvelopeLengthInput.value, +firstEnvelopeWidthInput.value);
+		const secondEnvelope = createEnvelope(+secondEnvelopeLengthInput.value, +secondEnvelopeWidthInput.value);
+
+		compareEnvelopes(firstEnvelope, secondEnvelope);
   });
 }
 
-function isSmaller(firstEnvelope, secondEnvelope) {
-	const envelopesParagraphElem = document.querySelector('#envelopes-result');
+function compareEnvelopes(firstEnvelope, secondEnvelope) {
+	const error = validateEnvelopesParameters(firstEnvelope, secondEnvelope);
 
-  const firstCondition = Math.max(...Object.values(secondEnvelope)) < Math.max(...Object.values(firstEnvelope));
-  const secondCondition = Math.min(...Object.values(secondEnvelope)) < Math.min(...Object.values(firstEnvelope));
+	if (!error) {
+		showResult(tryPutSecondIntoFirst(firstEnvelope, secondEnvelope));
+	} else {
+		showResult(error);
+	}
+}
 
-  if (firstCondition && secondCondition) {
+function validateEnvelopesParameters(firstEnvelope, secondEnvelope) {
+	const isFirstEnvelopeValid = (validator.isPositiveNumber(firstEnvelope.length));
+	const isSecondEnvelopeValid = (validator.isPositiveNumber(secondEnvelope.length));
+	let error = null;
 
-		envelopesParagraphElem.innerHTML = `<p>Status: successful</p>` + `<p>The second envelope can be placed in the first one</p>`;
-		
-		return;
-  };
+	if ( !isFirstEnvelopeValid || !isSecondEnvelopeValid ) {
+		error = {
+			status: 'failed',
+			reason: 'envelope deimensions should be positive numbers'
+		};
 
-  envelopesParagraphElem.innerHTML = `<p>Status: failed</p>` + `<p>The second envelope cannot be placed in the first one</p>`;
+		return error;
+	}
+
+	return error;
+}
+
+function tryPutSecondIntoFirst(firstEnvelope, secondEnvelope) {
+	const firstEnvelopeParameters = Object.values(firstEnvelope);
+	const secondEnvelopeParameters = Object.values(secondEnvelope);
+  const isSecondEnvelopeMaxValueLower = Math.max(...secondEnvelopeParameters) < Math.max(...firstEnvelopeParameters);
+  const isSecondEnvelopeMinValueLower = Math.min(...secondEnvelopeParameters) < Math.min(...firstEnvelopeParameters);
+
+  if ( isSecondEnvelopeMaxValueLower && isSecondEnvelopeMinValueLower ) {
+
+		return {
+			status: 'successful',
+			answer: 'The second envelope can be placed into the first one'
+		};
+	}
+
+	return {
+		status: 'successful',
+		answer: 'But! The second envelope cannot be placed into the first one'
+	};
+}
+
+function showResult(result) {
+	const envelopesResultContainer = document.querySelector('#envelopes-result');
+
+	if (result.status === 'failed') {
+		envelopesResultContainer.innerHTML = `
+			<p>Status: ${result.status}</p>
+			<p>Reason: ${result.reason}</p>
+		`;
+	} else {
+		envelopesResultContainer.innerHTML = `
+			<p>Status: ${result.status}</p>
+			<p>${result.answer}</p>
+		`;
+	}
+}
+
+function createEnvelope(lengthValue, widthValue) {
+	return {
+		length: lengthValue,
+		width: widthValue
+	};
 }

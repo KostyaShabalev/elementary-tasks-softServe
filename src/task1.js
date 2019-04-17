@@ -23,86 +23,106 @@ const chessboardTemplate = `
   <div id="chessboard-result"></div>
 `;
 
-const notEnoughParamsError = {
-  status: 'failed',
-  reason: 'function should recieve 3 paramenters'
-};
-const incorrectParamError = {
-  status: 'failed',
-  reason: 'one or more parameters are incorrect'
-}
-
 function getChessboardObject() {
 
   return {
     name: 'chessboard',
-    createTaskTemplate: createChessboardTemplate,
+    createTaskTemplate: getChessboardTemplate,
     setTaskListeners: setChessboardListeners
   };
 }
 
-function createChessboardTemplate() {
+function getChessboardTemplate() {
 
   return chessboardTemplate;
 }
 
 function setChessboardListeners() {
-  const lengthInputElem = document.querySelector('#chessboard-length');
-  const widthInputElem = document.querySelector('#chessboard-width');
-  const symbolInputElem = document.querySelector('#chessboard-symbol');
-  const runButtonElem = document.querySelector('.button-chessboard');
+  const lengthInput = document.querySelector('#chessboard-length');
+  const widthInput = document.querySelector('#chessboard-width');
+  const symbolInput = document.querySelector('#chessboard-symbol');
+  const runButton = document.querySelector('.button-chessboard');
 
-  runButtonElem.addEventListener('click', () => {
-    const chessboard = makeChessboard(+lengthInputElem.value, +widthInputElem.value, symbolInputElem.value);
+  runButton.addEventListener('click', () => {
+		const inputParams = [+lengthInput.value, +widthInput.value, symbolInput.value];
+		implementChessboard(inputParams);
   });
 }
 
-function makeChessboard(length, width, symb) {
+function implementChessboard(inputParams) {
+	const error = validateInputParameters(inputParams);
 
-  const chessboardParagraphElem = document.querySelector('#chessboard-result');
-  let resultChessboardTemplate = ``;
-
-  if ( arguments.length !== 3 ) {
-    chessboardParagraphElem.innerHTML = `
-    <p>Status: ${notEnoughParamsError.status}</p>
-    <p>Reason: ${notEnoughParamsError.reason}</p>
-    `;
-
-    return;
-  }
-
-  if ( !isCorrectParam(length) || !isCorrectParam(width) || (typeof symb !== 'string' || symb.length === 0) ) {
-    chessboardParagraphElem.innerHTML = `
-      <p>Status: ${incorrectParamError.status}</p>
-      <p>Reason: ${incorrectParamError.reason}</p>
-    `;
-
-    return;
-  }
-
-  for (let row = 1; row <= length; row++) {
-    resultChessboardTemplate += `<p>`;
-
-    for (let item = 1; item <= width; item++) {
-      if (
-        (row % 2 !== 0 && item % 2 !== 0) ||
-        (row % 2 === 0 && item % 2 === 0)) {
-
-        resultChessboardTemplate += symb;
-      } else {
-        resultChessboardTemplate += `&nbsp;`;
-      }
-
-      if (item === width) resultChessboardTemplate += `</p>`;
-    }
-  }
-
-  chessboardParagraphElem.innerHTML = `<p>Status: successful</p>` + resultChessboardTemplate;
+	if (!error) {
+		showResult(buildChessboard(...inputParams));
+	} else {
+		showResult(error);
+	}
 }
 
-function isCorrectParam(param) {
-  isNumber = typeof param === 'number';
-  isNatural = (param > 0) && (Math.floor(param) === param);
+function showResult(result) {
+	const chessboardResultContainer = document.querySelector('#chessboard-result');
+	
+	if (result.status === 'failed') {
+		chessboardResultContainer.innerHTML = `
+			<p>Status: ${result.status}</p>
+			<p>Reason: ${result.reason}</p>
+		`;
+	} else {
+		chessboardResultContainer.innerHTML = `
+			<p>Status: ${result.status}</p>
+			<p>${result.template}</p>
+		`;
+	}
+}
 
-  if (isNumber && isNatural) return true;
+function validateInputParameters(params) {
+	const haveAllArguments = validator.areAllArgumentsPassed(3, params);
+	const isLengthValid = ( validator.isNaturalNumber(params[0]) );
+	const isWidthValid = ( validator.isNaturalNumber(params[1]) );
+	const isSymbolValid = ( (params[2].length !== 0) && validator.isString(params[2]) );
+	let error = null;
+
+	if ( !haveAllArguments ) {
+		error = {
+			status: 'failed',
+			reason: 'function should recieve 3 paramenters'
+		}
+
+		return error;
+	}
+
+	if ( !isLengthValid || !isWidthValid || !isSymbolValid) {
+		error = {
+			status: 'failed',
+			reason: 'one or more parameters are incorrect'
+		}
+
+		return error;
+	}
+
+	return error;
+}
+
+function buildChessboard(length, width, symb) {
+  let chessboardResultTemplate = ``;
+
+  for (let row = 1; row <= length; row++) {
+    chessboardResultTemplate += `<p>`;
+
+    for (let column = 1; column <= width; column++) {
+
+      if ( (row % 2 !== 0 && column % 2 !== 0) || (row % 2 === 0 && column % 2 === 0)) {
+        chessboardResultTemplate += symb;
+      } else {
+        chessboardResultTemplate += `&nbsp;`;
+      }
+
+      if (column === width) chessboardResultTemplate += `</p>`;
+    }
+	}
+	
+	return {
+		status: 'successful',
+		template: chessboardResultTemplate
+	};
 }

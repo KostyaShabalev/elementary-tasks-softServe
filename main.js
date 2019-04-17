@@ -1,11 +1,12 @@
 
-const selectTaskElem = document.querySelector('#task-select');
-const buttonRunElem = document.querySelector('.run-task');
-const divTaskElem = document.querySelector('.task-container');
+const selectTaskElement = document.querySelector('#task-select');
+const buttonRunElement = document.querySelector('.run-task');
+const taskContainerElement = document.querySelector('.task-container');
 
 const taskList = [
   getChessboardObject(),
-  getEnevelopesObject()
+	getEnevelopesObject(),
+	getTrianglesObject()
 ];
 
 init();
@@ -25,13 +26,13 @@ function createOptions() {
     optionsTemplate += optionElemTemplate;
   });
 
-  selectTaskElem.innerHTML = optionsTemplate;
+  selectTaskElement.innerHTML = optionsTemplate;
 }
 
 function initHandlers() {
-  buttonRunElem.addEventListener('click', () => {
-    const currTask = taskList.find(task => task.name === selectTaskElem.value);
-    divTaskElem.innerHTML = currTask.createTaskTemplate();
-    currTask.setTaskListeners();
+  buttonRunElement.addEventListener('click', () => {
+    const currTask = taskList.find(task => task.name === selectTaskElement.value);
+    taskContainerElement.innerHTML = currTask.createTaskTemplate();
+		currTask.setTaskListeners();
   });
 }
