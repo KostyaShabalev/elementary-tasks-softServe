@@ -55,9 +55,9 @@ function compareEnvelopes(firstEnvelope, secondEnvelope) {
 	const error = validateEnvelopesParameters(firstEnvelope, secondEnvelope);
 
 	if (!error) {
-		showResult(tryPutSecondIntoFirst(firstEnvelope, secondEnvelope));
+		showEnvelopesResult(tryPutSecondIntoFirst(firstEnvelope, secondEnvelope));
 	} else {
-		showResult(error);
+		showEnvelopesResult(error);
 	}
 }
 
@@ -93,12 +93,12 @@ function tryPutSecondIntoFirst(firstEnvelope, secondEnvelope) {
 	}
 
 	return {
-		status: 'successful',
+		status: 'validation is passed',
 		answer: 'But! The second envelope cannot be placed into the first one'
 	};
 }
 
-function showResult(result) {
+function showEnvelopesResult(result) {
 	const envelopesResultContainer = document.querySelector('#envelopes-result');
 
 	if (result.status === 'failed') {

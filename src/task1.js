@@ -50,16 +50,16 @@ function setChessboardListeners() {
 }
 
 function implementChessboard(inputParams) {
-	const error = validateInputParameters(inputParams);
+	const error = validateChessboardInputParameters(inputParams);
 
 	if (!error) {
-		showResult(buildChessboard(...inputParams));
+		showChessboardResult(buildChessboard(...inputParams));
 	} else {
-		showResult(error);
+		showChessboardResult(error);
 	}
 }
 
-function showResult(result) {
+function showChessboardResult(result) {
 	const chessboardResultContainer = document.querySelector('#chessboard-result');
 	
 	if (result.status === 'failed') {
@@ -75,7 +75,7 @@ function showResult(result) {
 	}
 }
 
-function validateInputParameters(params) {
+function validateChessboardInputParameters(params) {
 	const haveAllArguments = validator.areAllArgumentsPassed(3, params);
 	const isLengthValid = ( validator.isNaturalNumber(params[0]) );
 	const isWidthValid = ( validator.isNaturalNumber(params[1]) );

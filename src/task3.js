@@ -2,8 +2,8 @@ const trianglesTemplate = `
 <h2>Task 3 - Triangles Sorting</h2>
 <div class="triangles-container" style="display: flex;">
 	<form class="form-triangles">
-		<div class="new-triangle">
-			<h3>New triangle</h3>
+		<h3>New triangle</h3>
+		<div class="new-triangle" style="display: flex; flex-direction: column;">
 			<label for="vertices">Vertices:</label>
 			<input type="text" id="vertices"><br><br>
 			<label for="first-side">First side:</label>
@@ -16,7 +16,7 @@ const trianglesTemplate = `
 	</form>
 	<div class="triangles-list-container" style="margin-left: 20px;">
 		<h3>Triangles List</h3>
-		<ul class="triangles-list"></ul>
+		<ol class="triangles-list"></ol>
 	</div>
 </div>
 <br>
@@ -25,8 +25,7 @@ const trianglesTemplate = `
 	<button class="button button-sort">Sort by square</button>
 </div>
 <br>
-<div class="status-container"></div>
-`;
+<div class="status-container"></div>`;
 
 const trianglesList = [];
 let trianglesListToRender = [];
@@ -46,8 +45,8 @@ function getTrianglesTemplate() {
 }
 
 function setTrianglesListeners() {
-	const addButton = document.querySelector('.button-add');
-	const sortButton = document.querySelector('.button-sort');
+	const addButton = query.getElement('.button-add');
+	const sortButton = query.getElement('.button-sort');
 	
 	addButton.addEventListener('click', () => {
 		addTriangle();
@@ -60,27 +59,27 @@ function setTrianglesListeners() {
 }
 
 function addTriangle() {
-	const inputValues = getInputValues();
+	const inputValues = getTriangleInputValues();
 	let validationError = null;
 	
 	if (inputValues) {
-		validationError = validateInputValues(inputValues);
+		validationError = validateTriangleInputValues(inputValues);
 	}
 
 	if (!validationError) {
 		trianglesList.push(createTriangle(inputValues));
 		trianglesListToRender = trianglesList.slice();
-		showTaskStatus();
+		showTrianglesStatus();
 	} else {
-		showTaskStatus(validationError);
+		showTrianglesStatus(validationError);
 	}
 }
 
-function getInputValues() {
-	const verticesInput = document.querySelector('#vertices');
-  const firstSideInput = document.querySelector('#first-side');
-	const secondSideInput = document.querySelector('#second-side');
-	const thirdSideInput = document.querySelector('#third-side');
+function getTriangleInputValues() {
+	const verticesInput = query.getElement('#vertices');
+  const firstSideInput = query.getElement('#first-side');
+	const secondSideInput = query.getElement('#second-side');
+	const thirdSideInput = query.getElement('#third-side');
 
 	if ( verticesInput.value && firstSideInput.value && secondSideInput.value && thirdSideInput.value) {
 
@@ -96,13 +95,13 @@ function getInputValues() {
 	}
 }
 
-function validateInputValues(inputValues) {
+function validateTriangleInputValues(inputValues) {
 	let typeError = null;
 	let cannotCreateError = null;
 	let isInListError = null;
 
-	typeError = validateInputTypes(inputValues);
-	cannotCreateError = validateSideLengths(inputValues);
+	typeError = validateTriangleInputTypes(inputValues);
+	cannotCreateError = validateTriangleSideLengths(inputValues);
 
 	if ( !typeError && !cannotCreateError ) {
 		isInListError = findVerticesInList(inputValues.vertices);
@@ -111,8 +110,8 @@ function validateInputValues(inputValues) {
 	return ( typeError || cannotCreateError || isInListError || null);
 }
 
-function validateInputTypes(inputValues) {
-	if ( !passNameValidation(inputValues.vertices) ) {
+function validateTriangleInputTypes(inputValues) {
+	if ( !passTriangleNameValidation(inputValues.vertices) ) {
 
 		return {
 			status: 'failed',
@@ -120,7 +119,7 @@ function validateInputTypes(inputValues) {
 		};
 	}
 
-	if ( !passSidesValidation(inputValues) )  {
+	if ( !passTriangleSidesValidation(inputValues) )  {
 
 			return {
 				status: 'failed',
@@ -131,7 +130,7 @@ function validateInputTypes(inputValues) {
 		return null;
 }
 
-function passNameValidation(name) {
+function passTriangleNameValidation(name) {
 	const isString = validator.isString(name);
 	const consistOfThreeCharacters = name.length === 3;
 	const hasOnlyThreeCharacters = validator.meetsRegExpPattern(name, /^[a-zA-Z]+$/);
@@ -141,8 +140,8 @@ function passNameValidation(name) {
 
 function passTriangleSidesValidation(inputValues) {
 	
-	return ( validator.isPositiveNumber(inputValues.firstSide) ||
-					validator.isPositiveNumber(inputValues.secondSide) ||
+	return ( validator.isPositiveNumber(inputValues.firstSide) &&
+					validator.isPositiveNumber(inputValues.secondSide) &&
 					validator.isPositiveNumber(inputValues.thirdSide) );
 }
 
@@ -201,7 +200,7 @@ function findTriangleSquareByHeron(triangleValues) {
 }
 
 function renderTrianglesList() {
-	const trianglesListElement = document.querySelector('.triangles-list');
+	const trianglesListElement = query.getElement('.triangles-list');
 	let trianglesListContent = ``;
 
 	trianglesListToRender.forEach(triangle => {
@@ -211,8 +210,8 @@ function renderTrianglesList() {
 	trianglesListElement.innerHTML = trianglesListContent;
 }
 
-function showTaskStatus(error) {
-	const taskStatusContainer = document.querySelector('.status-container');
+function showTrianglesStatus(error) {
+	const taskStatusContainer = query.getElement('.status-container');
 
 	if (error) {
 		taskStatusContainer.innerHTML = `

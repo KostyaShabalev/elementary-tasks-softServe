@@ -6,7 +6,7 @@ const validator = (function () {
 	}
 
 	validatorMethods.isNaturalNumber = function (value) {
-		return ( this.isNumber && (value > 0) && Number.isInteger(value) );
+		return ( this.isNumber(value) && (value > 0) && Number.isInteger(value) );
 	}
 
 	validatorMethods.isNumber = function (value) {
@@ -14,7 +14,7 @@ const validator = (function () {
 	}
 
 	validatorMethods.isPositiveNumber = function (value) {
-		return ( this.isNumber && (value > 0) );
+		return ( this.isNumber(value) && (value > 0) );
 	}
 
 	validatorMethods.isString = function (value) {

@@ -6,7 +6,8 @@ const taskContainerElement = document.querySelector('.task-container');
 const taskList = [
   getChessboardObject(),
 	getEnevelopesObject(),
-	getTrianglesObject()
+	getTrianglesObject(),
+	getPalindromeObject()
 ];
 
 init();
