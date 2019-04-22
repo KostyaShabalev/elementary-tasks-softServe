@@ -6,5 +6,9 @@ const query = (function () {
 		return document.querySelector(query);
 	};
 
+	queryMethods.clearElement = function (query) {
+		document.querySelector(query).innerHTML = '';
+	}
+
 	return queryMethods;
 }());

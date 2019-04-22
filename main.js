@@ -7,7 +7,9 @@ const taskList = [
   getChessboardObject(),
 	getEnevelopesObject(),
 	getTrianglesObject(),
-	getPalindromeObject()
+	getPalindromeObject(),
+	getTicketsObject(),
+	squaresModule
 ];
 
 init();

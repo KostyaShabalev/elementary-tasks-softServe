@@ -16,7 +16,7 @@ const palindromeTemplate = `
 	<br>
 	<div class="status-container"></div>`;
 
-	let palindromesFound = [];
+let palindromesFound = [];
 
 function getPalindromeObject() {
 	return {
