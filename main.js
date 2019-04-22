@@ -9,7 +9,8 @@ const taskList = [
 	getTrianglesObject(),
 	getPalindromeObject(),
 	getTicketsObject(),
-	squaresModule
+	squaresModule,
+	fibonacciModule
 ];
 
 init();
