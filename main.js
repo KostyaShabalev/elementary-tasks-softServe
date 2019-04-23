@@ -4,8 +4,8 @@ const buttonRunElement = document.querySelector('.run-task');
 const taskContainerElement = document.querySelector('.task-container');
 
 const taskList = [
-  getChessboardObject(),
-	getEnevelopesObject(),
+  chessboardModule,
+	envelopesModule,
 	getTrianglesObject(),
 	getPalindromeObject(),
 	getTicketsObject(),

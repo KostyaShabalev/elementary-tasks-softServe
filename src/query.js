@@ -6,6 +6,16 @@ const query = (function () {
 		return document.querySelector(query);
 	};
 
+	queryMethods.getSeveralElements = function () {
+		let elements = [];
+
+		[].forEach.call(arguments, query => {
+			elements.push(this.getElement(query));
+		});
+
+		return elements;
+	}
+
 	queryMethods.clearElement = function (query) {
 		document.querySelector(query).innerHTML = '';
 	}

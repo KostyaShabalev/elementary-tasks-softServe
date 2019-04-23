@@ -1,4 +1,4 @@
-const squaresModule = (function() {
+const squaresModule = (function () {
 	const squares = {};
 	const squaresTemplate = `
 	<h2>Task 6 - Squares of numbers</h2>

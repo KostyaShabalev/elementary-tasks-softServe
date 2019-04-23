@@ -1,122 +1,186 @@
-const envelopesTemplate = `
-  <h2>Task 2 - Envelopes Comparing</h2>
-  <form class="form-envelopes">
-    <div class="first-envelope">
-      <h3>First envelope dimensions</h3>
-      <label for="first-envelope-length">Length:</label>
-      <input type="number" id="first-envelope-length">
-      <label for="first-envelope-width">Width:</label>
-      <input type="number" id="first-envelope-width">
-    </div>
-    <br>
-    <div class="second-envelope">
-      <h3>Second envelope dimensions</h3>
-      <label for="second-envelope-length">Length:</label>
-      <input type="number" id="second-envelope-length">
-      <label for="second-envelope-width">Width:</label>
-      <input type="number" id="second-envelope-width">
-    </div>
-    <br>
-  </form>
-  <div>
-    <button class="button button-envelopes">Compare envelopes</button>
-  </div>
-  <div id="envelopes-result"></div>
-`;
+const envelopesModule = (function () {
+	let envelopes = {};
+	const envelopesTemplate = `
+		<h2>Task 2 - Envelopes Comparing</h2>
+		<form class="form-envelopes">
+			<div class="first-envelope">
+				<h3>First envelope dimensions</h3>
+				<label for="first-envelope-length">Length:</label>
+				<input type="number" id="first-envelope-length" class="first-envelope-length">
+				<label for="first-envelope-width">Width:</label>
+				<input type="number" id="first-envelope-width" class="first-envelope-width">
+			</div>
+			<br>
+			<div class="second-envelope">
+				<h3>Second envelope dimensions</h3>
+				<label for="second-envelope-length">Length:</label>
+				<input type="number" id="second-envelope-length" class="second-envelope-length">
+				<label for="second-envelope-width">Width:</label>
+				<input type="number" id="second-envelope-width" class="second-envelope-width">
+			</div>
+			<br>
+		</form>
+		<button class="button button-run">Compare envelopes</button>
+		<br>
+		<div class="validation-error"></div>
+		<br>
+		<div class="result-container"></div>`;
 
-function getEnevelopesObject() {
-  return {
-    name: 'envelopes',
-    createTaskTemplate: getEnvelopesTemplate,
-    setTaskListeners: setEnvelopesListeners
-  };
-}
+	const messages = {
+		invalidDimension: 'envelope\'s sides should be positive numbers',
+		validationPassed: 'validation successfully passed',
+		firstIsBigger: 'The first envelope CANNOT be placed into the second one',
+		secondIsBigger: 'The first envelope can be placed into the second one',
+		areEqual: 'Envelopes are equal'
+	};
+	let validationStatus = {};
 
-function getEnvelopesTemplate() {
-  return envelopesTemplate;
-}
+	envelopes.name = 'envelopes';
 
-function setEnvelopesListeners() {
-  const firstEnvelopeLengthInput = document.querySelector('#first-envelope-length');
-  const firstEnvelopeWidthInput = document.querySelector('#first-envelope-width');
-  const secondEnvelopeLengthInput = document.querySelector('#second-envelope-length');
-  const secondEnvelopeWidthInput = document.querySelector('#second-envelope-width');
-  const runButton = document.querySelector('.button-envelopes');
+	envelopes.createTaskTemplate = function () {
 
-  runButton.addEventListener('click', () => {
-		const firstEnvelope = createEnvelope(+firstEnvelopeLengthInput.value, +firstEnvelopeWidthInput.value);
-		const secondEnvelope = createEnvelope(+secondEnvelopeLengthInput.value, +secondEnvelopeWidthInput.value);
-
-		compareEnvelopes(firstEnvelope, secondEnvelope);
-  });
-}
-
-function compareEnvelopes(firstEnvelope, secondEnvelope) {
-	const error = validateEnvelopesParameters(firstEnvelope, secondEnvelope);
-
-	if (!error) {
-		showEnvelopesResult(tryPutSecondIntoFirst(firstEnvelope, secondEnvelope));
-	} else {
-		showEnvelopesResult(error);
-	}
-}
-
-function validateEnvelopesParameters(firstEnvelope, secondEnvelope) {
-	const isFirstEnvelopeValid = (validator.isPositiveNumber(firstEnvelope.length));
-	const isSecondEnvelopeValid = (validator.isPositiveNumber(secondEnvelope.length));
-	let error = null;
-
-	if ( !isFirstEnvelopeValid || !isSecondEnvelopeValid ) {
-		error = {
-			status: 'failed',
-			reason: 'envelope deimensions should be positive numbers'
-		};
-
-		return error;
+		return envelopesTemplate;
 	}
 
-	return error;
-}
+	envelopes.setTaskListeners = function () {
+		const runButton = query.getElement('.button-run');
+		
+		let inputElements = query.getSeveralElements(
+				'.first-envelope-length',
+				'.first-envelope-width',
+				'.second-envelope-length',
+				'.second-envelope-width');
 
-function tryPutSecondIntoFirst(firstEnvelope, secondEnvelope) {
-	const firstEnvelopeParameters = Object.values(firstEnvelope);
-	const secondEnvelopeParameters = Object.values(secondEnvelope);
-  const isSecondEnvelopeMaxValueLower = Math.max(...secondEnvelopeParameters) < Math.max(...firstEnvelopeParameters);
-  const isSecondEnvelopeMinValueLower = Math.min(...secondEnvelopeParameters) < Math.min(...firstEnvelopeParameters);
+		setInputListeners(inputElements);
+		setRunButtonListener(runButton);
+	}
 
-  if ( isSecondEnvelopeMaxValueLower && isSecondEnvelopeMinValueLower ) {
+	envelopes.validateDimension = function (event) {
+		const value = +event.target.value;
+		const isValid = validator.isPositiveNumber(value);
 
 		return {
-			status: 'successful',
-			answer: 'The second envelope can be placed into the first one'
+			isValid: isValid,
+			status: (isValid) ? 'seccess' : 'failed',
+			message: (isValid) ? messages.validationPassed : messages.invalidDimension
 		};
+
+		// if (isValid) {
+
+		// 	return {
+		// 		isValid: isValid,
+		// 		status: 
+		// 	};
+		// }
+
+		// const isFirstEnvelopeValid = (validator.isPositiveNumber(firstEnvelope.length));
+		// const isSecondEnvelopeValid = (validator.isPositiveNumber(secondEnvelope.length));
+		// let error = null;
+
+		// if (!isFirstEnvelopeValid || !isSecondEnvelopeValid) {
+		// 	error = {
+		// 		status: 'failed',
+		// 		reason: 'envelope deimensions should be positive numbers'
+		// 	};
+
+		// 	return error;
+		// }
+
+		// return error;
 	}
 
-	return {
-		status: 'validation is passed',
-		answer: 'But! The second envelope cannot be placed into the first one'
-	};
-}
+	envelopes.createEnvelope = function (length, width) {
 
-function showEnvelopesResult(result) {
-	const envelopesResultContainer = document.querySelector('#envelopes-result');
-
-	if (result.status === 'failed') {
-		envelopesResultContainer.innerHTML = `
-			<p>Status: ${result.status}</p>
-			<p>Reason: ${result.reason}</p>
-		`;
-	} else {
-		envelopesResultContainer.innerHTML = `
-			<p>Status: ${result.status}</p>
-			<p>${result.answer}</p>
-		`;
+		return {
+			length: length,
+			width: width
+		}
 	}
-}
 
-function createEnvelope(lengthValue, widthValue) {
-	return {
-		length: lengthValue,
-		width: widthValue
-	};
-}
+	envelopes.compareEnvelopes = function (firstEnvelope, secondEnvelope) {
+		const firstEnvelopeParameters = Object.values(firstEnvelope);
+		const secondEnvelopeParameters = Object.values(secondEnvelope);
+		const firstMaxSide = Math.max(...firstEnvelopeParameters);
+		const firstMinSide = Math.min(...firstEnvelopeParameters);
+		const secondMaxSide = Math.max(...secondEnvelopeParameters);
+		const secondMinSide = Math.min(...secondEnvelopeParameters);
+
+		if ( (firstMaxSide === secondMaxSide) && (firstMinSide === secondMinSide) ) {
+
+			return messages.areEqual;
+		}
+
+		return ( (firstMaxSide < secondMaxSide) &&
+								(firstMinSide < secondMinSide) ) ? messages.secondIsBigger : messages.firstIsBigger;
+	}
+
+	return envelopes;
+
+	function setInputListeners(inputs) {
+		const fields = ['firstLength', 'firstWidth', 'secondLength', 'secondWidth'];
+
+		inputs.forEach( (element, index) => {
+
+			element.addEventListener('blur', (event) => {
+				let field = fields[index];
+				validationStatus[field] = envelopes.validateDimension(event);
+
+				if (validationStatus[field].isValid) {
+					query.clearElement('.validation-error');
+					query.clearElement('.result-container');
+				} else {
+					displayError(validationStatus[field]);
+				}
+			});
+		} );
+	}
+
+	function setRunButtonListener(runButton) {
+		runButton.addEventListener('click', () => {
+			const parameters = Object.values(validationStatus);
+			const invalidParameters = parameters.filter(status => {
+				return !status.isValid;
+			});
+
+			if (invalidParameters.length === 0) {
+				query.clearElement('.validation-error');
+				runComparing();
+			} else {
+				displayError(invalidParameters[0]);
+			}
+		});
+	}
+
+	function runComparing() {
+		const inputElements = query.getSeveralElements(
+				'.first-envelope-length',
+				'.first-envelope-width',
+				'.second-envelope-length',
+				'.second-envelope-width');
+		const firstLength = +inputElements[0].value;
+		const firstWidth = +inputElements[1].value;
+		const secondLength = +inputElements[2].value;
+		const secondWidth = +inputElements[3].value;
+		let resultMessage = '';
+
+		const firstEnvelope = envelopes.createEnvelope(firstLength, firstWidth);
+		const secondEnvelope = envelopes.createEnvelope(secondLength, secondWidth);
+		
+		resultMessage = envelopes.compareEnvelopes(firstEnvelope, secondEnvelope);
+
+		showResult(resultMessage);
+	}
+
+	function displayError(status) {
+		const validationErrorContainer = query.getElement('.validation-error');
+
+		validationErrorContainer.innerHTML = `<p>${status.message}</p>`;
+	}
+
+	function showResult(message) {
+		let chessboardContainer = query.getElement('.result-container');
+
+		chessboardContainer.innerHTML = `<p>${message}</p>`;
+	}
+
+}());

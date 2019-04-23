@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Testing task #1</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/6.1.4/mocha.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/6.1.4/mocha.js"></script>
+  <script>
+    mocha.setup('bdd');
+  </script>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/4.2.0/chai.js"></script>
+  <script>
+    const assert = chai.assert;
+	</script>
+	
+</head>
+<body>
+
+		<div id="mocha"></div>
+		<script src="../../validators.js"></script>
+		<script src="../../query.js"></script>
+		<script src="../../task1.js"></script>
+		<script src="test-1.js"></script>
+		<script>
+			mocha.run();
+		</script>
+	
+</body>
+</html>
