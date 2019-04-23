@@ -64,29 +64,6 @@ const envelopesModule = (function () {
 			status: (isValid) ? 'seccess' : 'failed',
 			message: (isValid) ? messages.validationPassed : messages.invalidDimension
 		};
-
-		// if (isValid) {
-
-		// 	return {
-		// 		isValid: isValid,
-		// 		status: 
-		// 	};
-		// }
-
-		// const isFirstEnvelopeValid = (validator.isPositiveNumber(firstEnvelope.length));
-		// const isSecondEnvelopeValid = (validator.isPositiveNumber(secondEnvelope.length));
-		// let error = null;
-
-		// if (!isFirstEnvelopeValid || !isSecondEnvelopeValid) {
-		// 	error = {
-		// 		status: 'failed',
-		// 		reason: 'envelope deimensions should be positive numbers'
-		// 	};
-
-		// 	return error;
-		// }
-
-		// return error;
 	}
 
 	envelopes.createEnvelope = function (length, width) {
