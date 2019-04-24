@@ -37,7 +37,7 @@ const envelopesModule = (function () {
 
 	envelopes.name = 'envelopes';
 
-	envelopes.createTaskTemplate = function () {
+	envelopes.getTaskTemplate = function () {
 
 		return envelopesTemplate;
 	}
@@ -55,13 +55,13 @@ const envelopesModule = (function () {
 		setRunButtonListener(runButton);
 	}
 
-	envelopes.validateDimension = function (event) {
+	envelopes.getValidationStatus = function (event) {
 		const value = +event.target.value;
 		const isValid = validator.isPositiveNumber(value);
 
 		return {
 			isValid: isValid,
-			status: (isValid) ? 'seccess' : 'failed',
+			status: (isValid) ? 'success' : 'failed',
 			message: (isValid) ? messages.validationPassed : messages.invalidDimension
 		};
 	}
@@ -100,7 +100,7 @@ const envelopesModule = (function () {
 
 			element.addEventListener('blur', (event) => {
 				let field = fields[index];
-				validationStatus[field] = envelopes.validateDimension(event);
+				validationStatus[field] = envelopes.getValidationStatus(event);
 
 				if (validationStatus[field].isValid) {
 					query.clearElement('.validation-error');

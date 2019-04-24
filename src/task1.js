@@ -3,21 +3,14 @@ const chessboardModule = (function () {
 	const chessboardTemplate = `
 		<h2>Task 1 - Chessboard Creating</h2>
 		<form class="form-chess">
-			<div>
+			<div style="width: 30%; display: flex; flex-direction: column;">
 				<label for="chessboard-length">Length:</label>
-				<input type="number" id="chessboard-length" class="input input-length">
-			</div>
-			<br>
-			<div>
+				<input type="number" id="chessboard-length" class="input input-length"><br>
 				<label for="chessboard-width">Width:</label>
-				<input type="number" id="chessboard-width" class="input input-width">
-			</div>
-			<br>
-			<div>
+				<input type="number" id="chessboard-width" class="input input-width"><br>
 				<label for="chessboard-symbol">Symbol:</label>
-				<input type="text" id="chessboard-symbol" class="input input-symbol">
+				<input type="text" id="chessboard-symbol" class="input input-symbol"><br>
 			</div>
-			<br>
 		</form>
 		<button class="button button-run">Create Chessboard</button>
 		<br>
@@ -34,7 +27,7 @@ const chessboardModule = (function () {
 
 	chessboard.name = 'chessboard';
 
-	chessboard.createTaskTemplate = function () {
+	chessboard.getTaskTemplate = function () {
 
 		return chessboardTemplate;
 	};
@@ -58,12 +51,14 @@ const chessboardModule = (function () {
 		switch (field) {
 			case 'symbol':
 				isValid = ( (value) && validator.isString(value) );
-				parameterValidationStatus.message = (isValid) ? 'validation successfully passed' : errorMessages.invalidSymbol;
+				parameterValidationStatus.message = (isValid) ?
+					'validation successfully passed' : errorMessages.invalidSymbol;
 				break;
 
 			case 'length':
 				isValid = ( validator.isNaturalNumber(value) && (value < 11));
-				parameterValidationStatus.message = (isValid) ? 'validation successfully passed' : errorMessages.invalidLength;
+				parameterValidationStatus.message = (isValid) ?
+					'validation successfully passed' : errorMessages.invalidLength;
 				break;
 
 			case 'width':
@@ -104,48 +99,38 @@ const chessboardModule = (function () {
 		const field = 'length';
 		const value = event.target.value;
 
-		validationStatus.lengthInput = chessboard.getParameterValidationStatus(+value, field);
-
-		if (validationStatus.lengthInput.isValid) {
-			query.clearElement('.validation-error');
-			query.clearElement('.result-container');
-		} else {
-			displayError(validationStatus.lengthInput);
-		}
+		handleValidationStatus(+value, field);
 	}
 
 	function validateWidth(event) {
 		const field = 'width';
 		const value = event.target.value;
 
-		validationStatus.widthInput = chessboard.getParameterValidationStatus(+value, field);
-
-		if (validationStatus.widthInput.isValid) {
-			query.clearElement('.validation-error');
-			query.clearElement('.result-container');
-		} else {
-			displayError(validationStatus.widthInput);
-		}
+		handleValidationStatus(+value, field);
 	}
 
 	function validateSymbol(event) {
 		const field = 'symbol';
 		const value = event.target.value;
 
-		validationStatus.symbolInput = chessboard.getParameterValidationStatus(value, field);
+		handleValidationStatus(value, field);
+	}
 
-		if (validationStatus.symbolInput.isValid) {
-			query.clearElement('.validation-error');
-			query.clearElement('.result-container');
+	function handleValidationStatus(value, field) {
+		validationStatus[field] = chessboard.getParameterValidationStatus(value, field);
+
+		if (validationStatus[field].isValid) {
+			clearInnerHtml(['.validation-error', '.result-container']);
 		} else {
-			displayError(validationStatus.symbolInput);
+			clearInnerHtml(['.validation-error', '.result-container']);
+			displayError(validationStatus[field]);
 		}
 	}
 
 	function runChessboardBuilding() {
-		const isInvalid = (!validationStatus.lengthInput.isValid ||
-			!validationStatus.widthInput.isValid ||
-			!validationStatus.symbolInput.isValid);
+		const isInvalid = (!validationStatus.length.isValid ||
+			!validationStatus.width.isValid ||
+			!validationStatus.symbol.isValid);
 
 		if (!isInvalid) {
 			const inputElements = query.getSeveralElements('.input-length', '.input-width', '.input-symbol');
@@ -153,8 +138,7 @@ const chessboardModule = (function () {
 			const width = inputElements[1].value;
 			const symbol = inputElements[2].value;
 
-			query.clearElement('.validation-error');
-			query.clearElement('.result-container');
+			clearInnerHtml(['.validation-error', '.result-container']);
 
 			const chessboardTemplate = chessboard.buildChessboard(+length, +width, symbol);
 
@@ -172,5 +156,12 @@ const chessboardModule = (function () {
 		let chessboardContainer = query.getElement('.result-container');
 
 		chessboardContainer.innerHTML = template;
+	}
+
+	function clearInnerHtml(queries) {
+		queries.forEach(element => {
+			query.clearElement(element);
+			query.clearElement(element);
+		});
 	}
 }());

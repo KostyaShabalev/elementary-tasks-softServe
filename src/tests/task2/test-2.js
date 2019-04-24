@@ -1,21 +1,42 @@
-const createTemplate = chessboardModule.createTaskTemplate;
-const getParameterValidationStatus = chessboardModule.getParameterValidationStatus;
-const buildChessboard = chessboardModule.buildChessboard;
+const getTaskTemplate = envelopesModule.getTaskTemplate;
+const getValidationStatus = envelopesModule.getValidationStatus;
+const createEnvelope = envelopesModule.createEnvelope;
+const compareEnvelopes = envelopesModule.compareEnvelopes;
 
-const checkValidParameters = function (parameterArray, field) {
+const checkValidParameters = function (validValues) {
 	it('validation should be passed', function () {
-		parameterArray.forEach(parameter => {
-			assert.equal(getParameterValidationStatus(parameter, field).isValid, true);
+		const expectedResult = {
+			isValid: true,
+			status: 'success',
+			message: 'validation successfully passed'
+		};
+
+		validValues.forEach(value => {
+			let pseudoEvent = {
+				target: {value: [value]}
+			};
+			assert.deepEqual(getValidationStatus(pseudoEvent), expectedResult);
 		});
 	});
+
 }
 
-const checkInvalidParameters = function (parameterArray, field) {
+const checkinvalidParameters = function (invalidValues) {
 	it('validation should not be passed', function () {
-		parameterArray.forEach(parameter => {
-			assert.equal(getParameterValidationStatus(parameter, field).isValid, false);
+		const expectedResult = {
+			isValid: false,
+			status: 'failed',
+			message: 'envelope\'s sides should be positive numbers'
+		};
+
+		invalidValues.forEach(value => {
+			let pseudoEvent = {
+				target: {value: [value]}
+			};
+			assert.deepEqual(getValidationStatus(pseudoEvent), expectedResult);
 		});
 	});
+
 }
 
 const checIfStrinReturned = function (func, comment, args) {
@@ -28,48 +49,84 @@ const checIfStrinReturned = function (func, comment, args) {
 	});
 }
 
-describe('Chessboard', function () {
+const secondFitsInto = function () {
+	const firstEnvelope = {
+		length: 4,
+		width: 6
+	};
+	const secondEnvelope = {
+		length: 3,
+		width: 5
+	};
+	const expectedMessage = 'The first envelope CANNOT be placed into the second one';
 
-	describe('testing "createTemplate"', function () {
+	checkIfComparisonSuccessful(firstEnvelope, secondEnvelope, expectedMessage);
+}
+
+const secondNotFitsInto = function () {
+	const firstEnvelope = {
+		length: 4,
+		width: 4.9
+	};
+	const secondEnvelope = {
+		length: 5,
+		width: 5
+	};
+	const expectedMessage = 'The first envelope can be placed into the second one';
+
+	checkIfComparisonSuccessful(firstEnvelope, secondEnvelope, expectedMessage);
+}
+
+const bothAreEqual = function () {
+	const firstEnvelope = {
+		length: 5,
+		width: 5
+	};
+	const secondEnvelope = {
+		length: 5,
+		width: 5
+	};
+	const expectedMessage = 'Envelopes are equal';
+
+	checkIfComparisonSuccessful(firstEnvelope, secondEnvelope, expectedMessage);
+}
+
+const checkIfComparisonSuccessful = function (firstEnvelope, secondEnvelope, expectedMessage) {
+	it('comparison returns correct result', function () {
+		assert.equal(compareEnvelopes(firstEnvelope, secondEnvelope), expectedMessage);
+	});
+}
+
+describe('Envelopes', function () {
+
+	describe('testing "getTaskTemplate"', function () {
 		const comment = 'createTemplate should return a string';
-		checIfStrinReturned(createTemplate, comment);
+		checIfStrinReturned(getTaskTemplate, comment);
 	});
 
-	describe('testing "getParameterValidationStatus"', function () {
+	describe('testing "getValidationStatus"', function () {
+		const validValues = [1, 2.5];
+		const invalidValues = [-5, 0];
 
-		describe('length validation', function () {
-			const field = 'length';
-			const validLengths = [1, 10];
-			const invalidLengths = [-5, 0, 11];
+		checkValidParameters(validValues);
+		checkinvalidParameters(invalidValues);
+	});
 
-			checkValidParameters(validLengths, field);
-			checkInvalidParameters(invalidLengths, field);
-		});
+	describe('testing "createEnvelope"', function() {
+		const expectedResult = {
+			length: 10,
+			width: 20
+		};
 
-		describe('width validation', function () {
-			const field = 'width';
-			const validWidths = [1, 25, 50];
-			const invalidWidths = [-5, 0, 51];
-
-			checkValidParameters(validWidths, field);
-			checkInvalidParameters(invalidWidths, field);
-		});
-
-		describe('symbol validation', function () {
-			const field = 'symbol';
-			const validSymbols = ['1', '*', 'gert3'];
-			const invalidSymbols = [1, ''];
-
-			checkValidParameters(validSymbols, field);
-			checkInvalidParameters(invalidSymbols, field);
+		it('correct envelope should be created', function () {
+			assert.deepEqual(createEnvelope(10, 20), expectedResult);
 		});
 	});
 
-	describe('testing "buildChessboard"', function() {
-		const inputParameters = [4, 4, '*'];
-
-		const comment = 'buildChessboard should return a string';
-		checIfStrinReturned(createTemplate, comment, inputParameters);
+	describe('testing "compareEnvelopes"', function () {
+		secondFitsInto();
+		secondNotFitsInto();
+		bothAreEqual();
 	});
 
 });

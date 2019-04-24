@@ -1,4 +1,6 @@
-const palindromeTemplate = `
+const palindromeModule = (function () {
+	let palindrome = {};
+	const palindromeTemplate = `
 	<h2>Task 4 - Palindrome</h2>
 	<div class="palindrome-container" style="display: flex;">
 		<form class="form-palindrome">
@@ -18,18 +20,20 @@ const palindromeTemplate = `
 
 let palindromesFound = [];
 
-function getPalindromeObject() {
-	return {
-		name: 'palindrome',
-		createTaskTemplate: getPalindromeTemplate,
-		setTaskListeners: setPalindromeListeners
-	};
-}
+palindrome.name = 'palindrome';
 
-function getPalindromeTemplate() {
+palindrome.getTaskTemplate = function () {
 
 	return palindromeTemplate;
+};
+
+palindrome.setTaskListeners = function () {
+	const palindromeCheckButton = query.getElement('.button-palindrome');
+
+	palindromeCheckButton.addEventListener('click', runPalindromeCheck);
 }
+
+return palindrome;
 
 function setPalindromeListeners() {
 	const palindromeCheckButton = query.getElement('.button-palindrome');
@@ -128,3 +132,4 @@ function renderPalindromes() {
 
 	palindromeList.innerHTML = palindromeItemsTemplate;
 }
+}());

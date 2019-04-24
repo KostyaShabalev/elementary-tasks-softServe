@@ -1,4 +1,6 @@
-const trianglesTemplate = `
+const trianglesModule = (function () {
+	let triangles = {}
+	const trianglesTemplate = `
 <h2>Task 3 - Triangles Sorting</h2>
 <div class="triangles-container" style="display: flex;">
 	<form class="form-triangles">
@@ -31,20 +33,14 @@ const trianglesList = [];
 let trianglesListToRender = [];
 let fromMinSort = true;
 
-function getTrianglesObject() {
-  return {
-    name: 'triangles',
-    createTaskTemplate: getTrianglesTemplate,
-    setTaskListeners: setTrianglesListeners
-  };
+triangles.name = 'triangles';
+
+triangles.getTaskTemplate = function () {
+
+	return trianglesTemplate;
 }
 
-function getTrianglesTemplate() {
-
-  return trianglesTemplate;
-}
-
-function setTrianglesListeners() {
+triangles.setTaskListeners = function () {
 	const addButton = query.getElement('.button-add');
 	const sortButton = query.getElement('.button-sort');
 	
@@ -57,6 +53,35 @@ function setTrianglesListeners() {
 		renderTrianglesList();
 	});
 }
+
+return triangles;
+
+// function getTrianglesObject() {
+//   return {
+//     name: 'triangles',
+//     createTaskTemplate: getTrianglesTemplate,
+//     setTaskListeners: setTrianglesListeners
+//   };
+// }
+
+// function getTrianglesTemplate() {
+
+//   return trianglesTemplate;
+// }
+
+// function setTrianglesListeners() {
+// 	const addButton = query.getElement('.button-add');
+// 	const sortButton = query.getElement('.button-sort');
+	
+// 	addButton.addEventListener('click', () => {
+// 		addTriangle();
+// 		renderTrianglesList();
+// 	});
+// 	sortButton.addEventListener('click', () => {
+// 		sortBySquares();
+// 		renderTrianglesList();
+// 	});
+// }
 
 function addTriangle() {
 	const inputValues = getTriangleInputValues();
@@ -235,3 +260,4 @@ function sortBySquares() {
 
 	fromMinSort = !fromMinSort;
 }
+}());

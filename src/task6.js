@@ -27,7 +27,7 @@ const squaresModule = (function () {
 
 	squares.name = 'sqaures';
 
-	squares.createTaskTemplate = function () {
+	squares.getTaskTemplate = function () {
 
 		return squaresTemplate;
 	};

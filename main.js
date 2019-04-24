@@ -6,9 +6,9 @@ const taskContainerElement = document.querySelector('.task-container');
 const taskList = [
   chessboardModule,
 	envelopesModule,
-	getTrianglesObject(),
-	getPalindromeObject(),
-	getTicketsObject(),
+	trianglesModule,
+	palindromeModule,
+	ticketsModule,
 	squaresModule,
 	fibonacciModule
 ];
@@ -36,7 +36,7 @@ function createOptions() {
 function initHandlers() {
   buttonRunElement.addEventListener('click', () => {
     const currTask = taskList.find(task => task.name === selectTaskElement.value);
-    taskContainerElement.innerHTML = currTask.createTaskTemplate();
+    taskContainerElement.innerHTML = currTask.getTaskTemplate();
 		currTask.setTaskListeners();
   });
 }

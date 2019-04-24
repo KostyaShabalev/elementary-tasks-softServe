@@ -45,7 +45,7 @@ const fibonacciModule = (function() {
 
 	fibonacci.name = 'fibonacci';
 
-	fibonacci.createTaskTemplate = function () {
+	fibonacci.getTaskTemplate = function () {
 
 		return fibonacciTemplate;
 	};

@@ -1,4 +1,6 @@
-const ticketsTemplate = `
+const ticketsModule = (function () {
+	let tickets = {};
+	const ticketsTemplate = `
 	<h2>Task 5 - Lucky Tickets</h2>
 	<div class="tickets-container">
 		<form class="form-tickets">
@@ -25,20 +27,14 @@ const ticketsValidationStatus = {
 
 const ticketsInputElements = {};
 
-function getTicketsObject() {
-	return {
-		name: 'tickets',
-		createTaskTemplate: getTicketsTemplate,
-		setTaskListeners: setTicketsListeners
-	};
-}
+tickets.name = 'tickets';
 
-function getTicketsTemplate() {
+tickets.getTaskTemplate = function () {
 
 	return ticketsTemplate;
-}
+};
 
-function setTicketsListeners() {
+tickets.setTaskListeners = function () {
 	const ticketsCalculateButton = query.getElement('.button-calculate');
 
 	ticketsInputElements.fromInput = query.getElement('.input-from');
@@ -75,7 +71,9 @@ function setTicketsListeners() {
 			showTicketsResult(ticketsCalculationResult);
 		}
 	});
-}
+};
+
+return tickets;
 
 function validateTicketsInput(event, inputType) {
 	const currValue = +event.target.value;
@@ -225,3 +223,4 @@ function showTicketsResult(result) {
 	
 	resultContainer.innerHTML = resultContent;
 }
+}());
